@@ -1,0 +1,10 @@
+
+MotorBoat. Model: <RQEER>, Power: <90> 
+MotorBoat. Model: <QERRE>, Power: <36> 
+MotorBoat. Model: <RQQQQ>, Power: <34> 
+MotorBoat. Model: <WRWEE>, Power: <95> 
+MotorBoat. Model: <WEEQW>, Power: <98> 
+MotorBoat. Model: <QWEWW>, Power: <13> 
+
+
+

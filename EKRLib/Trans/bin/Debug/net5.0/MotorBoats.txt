@@ -1,0 +1,10 @@
+MotorBoat. Model: <QWREW>, Power: <92> 
+
+MotorBoat. Model: <EEQWQ>, Power: <62> 
+
+MotorBoat. Model: <QQWRW>, Power: <14> 
+MotorBoat. Model: <WEEQR>, Power: <98> 
+
+
+
+

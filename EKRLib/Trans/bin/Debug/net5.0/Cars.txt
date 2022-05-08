@@ -1,0 +1,10 @@
+
+Car. Model: <RQQQQ>, Power: <48> 
+
+Car. Model: <EEEEW>, Power: <61> 
+
+
+Car. Model: <QWEWR>, Power: <95> 
+Car. Model: <WRWRQ>, Power: <57> 
+
+
