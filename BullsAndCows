@@ -1,0 +1,162 @@
+using System;
+using System.Drawing;
+using System.IO.Pipes;
+using System.Linq.Expressions;
+using System.Runtime.Serialization;
+using System.Security.Cryptography.X509Certificates;
+
+namespace Bk
+{
+    class Program
+    {
+        /// <summary>
+        /// Поле, создающее рандомное секретное число.
+        /// </summary>
+        public static Random rnd = new Random();
+        static void Main(string[] args)
+        {
+            do
+            {
+                WriteLine("Добро пожаловать, хозяин. Предстоит сыграть в игру и угадать число. Правила тебе уже известны. Желаем удачи.)", ConsoleColor.DarkBlue, ConsoleColor.Yellow);
+                int secret;
+                secret = GetSecret();
+                PlayGame(secret);
+                WriteLine("Поздравляю, вы угадали число!", ConsoleColor.DarkBlue, ConsoleColor.Yellow);
+                WriteLine("Чтобы сыграть снова, нажмите Enter", ConsoleColor.DarkBlue, ConsoleColor.Yellow);
+            } while (Console.ReadKey(true).Key == ConsoleKey.Enter);
+        }
+        /// <summary>
+        /// Метод, реализующий процесс игры.
+        /// </summary>
+        /// <param name="secret"> Рандомное секретное число.</param>
+        private static void PlayGame(int secret)
+        {
+            int answer;
+            int bulls = 0;
+            int cows;
+            int steps = 0;
+            while (bulls != 4)
+            {
+                answer = GetNumber();
+                bulls = GetBulls(secret, answer);
+                cows = GetCows(secret, answer);
+                WriteLine($"Bulls: {bulls} Cows: {cows}\n Попробуйте снова.", ConsoleColor.DarkBlue, ConsoleColor.Yellow);
+                if (steps++ > 5)
+                {
+                    Console.Clear();
+                    WriteLine("Очистили вам консоль, хозяин. ", ConsoleColor.DarkBlue, ConsoleColor.Yellow);
+                    steps = 0;
+                }
+
+            }
+        }
+        /// <summary>
+        /// Метод, генерирующий рандомное секретное число.
+        /// </summary>
+        /// <returns></returns>
+        private static int GetSecret()
+        {
+            int number;
+            do
+            {
+                number = rnd.Next(1000, 10000);
+            } while (!CheckNumber(number));
+            return number;
+        }
+        /// <summary>
+        /// Метод, который проверяет число на наличие повторяющихся цифр.
+        /// </summary>
+        /// <param name="number"> Число на проверку.</param>
+        /// <returns></returns>
+        private static bool CheckNumber(int number)
+        {
+            bool[] arr = new bool[10];
+
+            while (number != 0)
+            {
+                int dig = number % 10;
+                if (arr[dig])
+                    return false;
+                arr[dig] = true;
+                number /= 10;
+            }
+            return true;
+        }
+        /// <summary>
+        /// Метод, который получает число у пользователя и проверяет на корректность.
+        /// </summary>
+        /// <returns></returns>
+        public static int GetNumber()
+        {
+            int guestnumber;
+            WriteLine("Введите число:", ConsoleColor.DarkBlue, ConsoleColor.Yellow);
+            while (!int.TryParse(Console.ReadLine(), out guestnumber) || guestnumber > 9999 || guestnumber < 1000 || !CheckNumber(guestnumber))
+            {
+                WriteLine("Ошибка ввода. Число должно быть целое " +
+                "(четырехзначное) и состоять из разных цифр.\n Пробуйте еще раз:", ConsoleColor.DarkBlue, ConsoleColor.Yellow);
+            }
+            return guestnumber;
+
+        }
+        /// <summary>
+        /// Метод, который считает число "быков".
+        /// </summary>
+        /// <param name="secret">Рандомное секретное число.</param>
+        /// <param name="answer">Число, которое ввел пользователь.</param>
+        /// <returns></returns>
+        public static int GetBulls(int secret, int answer)
+        {
+            int bulls = 0;
+            while (secret != 0 && answer != 0)
+            {
+                if (secret % 10 == answer % 10)
+                    bulls += 1;
+                secret /= 10;
+                answer /= 10;
+            }
+            return bulls;
+        }
+        /// <summary>
+        /// Метод,который считает количество "коров".
+        /// </summary>
+        /// <param name="secret">Рандомное секретное число.</param>
+        /// <param name="answer"> Число, которое ввел пользователь.</param>
+        /// <returns></returns>
+        public static int GetCows(int secret, int answer)
+        {
+            var bulls = GetBulls(secret, answer);
+            bool[] secArr = new bool[10];
+            bool[] ansArr = new bool[10];
+            int cows = 0;
+            while (secret != 0 && answer != 0)
+            {
+                int dig1 = secret % 10;
+                int dig2 = answer % 10;
+                secArr[dig1] = true;
+                ansArr[dig2] = true;
+                secret /= 10;
+                answer /= 10;
+            }
+            for (int i = 0; i < 10; i++)
+            {
+                if (secArr[i] & ansArr[i])
+                    cows++;
+            }
+            return (cows - bulls);
+        }
+        /// <summary>
+        /// Метод, меняющий цвет строки и фона.
+        /// </summary>
+        /// <param name="s"> Введенный текст.</param>
+        /// <param name="fcolor">Цвет текста.</param>
+        /// <param name="bcolor">Цвета фона текста.</param>
+        public static void WriteLine(string s, ConsoleColor fcolor
+            = ConsoleColor.White, ConsoleColor bcolor = ConsoleColor.Black)
+        {
+            Console.ForegroundColor = fcolor;
+            Console.BackgroundColor = bcolor;
+            Console.WriteLine(s);
+            Console.ResetColor();
+        }
+    }
+}
